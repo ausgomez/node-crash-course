@@ -1,0 +1,9 @@
+<div class="blogs content">
+  <h2>All Blogs</h2>
+  {{#each blogs}}
+  <a class="single" href="/blogs/{{this._id}}">
+    <h3>{{ this.title }}</h3>
+    <p>{{ this.snippet }}</p>
+  </a>
+  {{/each}}
+</div>
