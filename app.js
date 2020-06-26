@@ -2,7 +2,7 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-const Blog = require('./models/Blog')
+const blogsRoutes = require('./routes/blog_routes')
 
 // connect to mongo db
 const DB_URI = 'mongodb+srv://anstroy:sonic123@cluster0-wcweq.mongodb.net/node-tuts?retryWrites=true&w=majority'
@@ -42,47 +42,7 @@ app.get('/about', (req, res) => {
 })
 
 // Blog Routes
-app.get('/blogs', (req, res) => {
-  Blog.find()
-    .lean()
-    .sort({ createdAt: -1 })
-    .then((result) => {
-      console.log(result)
-      res.render('index', { title: 'All Blogs', blogs: result })
-    })
-    .catch((err) => console.log(err))
-})
-
-app.post('/blogs', (req, res) => {
-  const blog = new Blog(req.body)
-  blog
-    .save()
-    .then((result) => {
-      res.redirect('/blogs')
-    })
-    .catch((err) => console.log(err))
-})
-
-app.get('/blogs/:id', (req, res) => {
-  Blog.findById(req.params.id)
-    .lean()
-    .then((result) => {
-      res.render('details', { title: 'Blog Details', blog: result })
-    })
-    .catch((err) => console.log(err))
-})
-
-app.delete('/blogs/:id', (req, res) => {
-  Blog.findByIdAndDelete(req.params.id)
-    .then((result) => {
-      res.json({ redirect: '/blogs' })
-    })
-    .catch((err) => console.log(err))
-})
-
-app.get('/blogs/create', (req, res) => {
-  res.render('create', { title: 'Create' })
-})
+app.use('/blogs', blogsRoutes)
 
 // 404 - must be at the bottom since it applies to all the routes
 app.use((req, res) => {
